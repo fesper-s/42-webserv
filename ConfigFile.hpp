@@ -1,7 +1,7 @@
 #ifndef CONFIGFILE_HPP
 # define CONFIGFILE_HPP
 
-#include "Webserv.hpp"
+#include "webserv.hpp"
 
 class ConfigFile
 {
@@ -17,7 +17,7 @@ class ConfigFile
 		std::string	readFile(std::string path);
 		int isRealAndReadable(std::string const path, std::string const index);
     private:
-        _path;
+        std::string _path;
 };
 
 #endif
