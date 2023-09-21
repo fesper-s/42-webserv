@@ -1,10 +1,16 @@
 #include "webserv.hpp"
 
 int main(int argc, char **argv) {
-	if (argc != 2) {
-		std::cout << "Try: ./webserv [parameter]" << std::endl;
+	if (argc == 1 || argc == 2)
+	{
+		Parser	parser;
+		std::string conf;
+		if (argc == 1)
+			conf = "default.conf";
+		else
+			conf = argv[1];
+		parser.checkAndReadFile(conf);
 		return 1;
 	}
-	(void) argv;
 	return 0;
 }
