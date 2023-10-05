@@ -12,12 +12,21 @@ int Parser::checkAndReadFile(const std::string &config_file)
     ConfigFile file(config_file);
 
     if (file.getTypePath(file.getPath()) != 1)
+    {
         std::cout << "file is invalid" << std::endl;
+        exit(EXIT_FAILURE);
+    }
     if (file.checkFile(file.getPath(), 4) == -1)
+    {
         std::cout << "file is invalid" << std::endl;
+        exit(EXIT_FAILURE);
+    }
     content = file.readFile(config_file);
     if (content.empty())
+    {
 		std::cout << "File is empty" << std::endl;
+        exit(EXIT_FAILURE);
+    }
     std::cout << content << std::endl;
     content = removeFileComments(content);
     content = removeFileWhiteSpace(content);

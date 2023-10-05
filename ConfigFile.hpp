@@ -11,7 +11,7 @@ class ConfigFile
         ~ConfigFile();
 
         std::string getPath();
-        int getTypePath(std::string const path);
+        static int getTypePath(std::string const path);
 
 		int checkFile(std::string const path, int mode);
 		std::string	readFile(std::string path);

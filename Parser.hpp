@@ -13,6 +13,8 @@ class Parser
 
         std::string removeFileComments(std::string &content);
         std::string removeFileWhiteSpace(std::string &content);
+    private:
+        size_t  _nb_server;
 };
 
 #endif
