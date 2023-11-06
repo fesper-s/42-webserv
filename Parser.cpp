@@ -21,10 +21,8 @@ int Parser::checkAndReadFile(const std::string &config_file) {
 		std::cout << "File is empty" << std::endl;
         exit(EXIT_FAILURE);
     }
-    std::cout << content << std::endl;
     content = removeFileComments(content);
-    content = removeFileWhiteSpace(content);
-    std::cout << content << std::endl;
+    removeFileWhiteSpace(content);
 
     return (0);
 }
@@ -37,35 +35,21 @@ std::string Parser::removeFileComments(std::string &content) {
     while (std::getline(iss, line)) {
         size_t commentPos = line.find('#');
         if (commentPos != std::string::npos) {
-            // Remove tudo após o caractere '#', incluindo o próprio caractere
             line.erase(commentPos);
         }
-        result += line + "\n"; // Reconstroi a string resultante
+        result += line + "\n";
     }
-
     return result;
 }
 
+void Parser::removeFileWhiteSpace(std::string &content) {
+	size_t i = 0;
 
-std::string Parser::removeFileWhiteSpace(std::string &content) {
-    std::string result;
-    std::istringstream iss(content);
-    std::string line;
-
-    while (std::getline(iss, line)) {
-        // Verifica se a linha não está em branco (contém caracteres visíveis)
-        bool isNonEmpty = false;
-        for (size_t i = 0; i < line.length(); i++) {
-            if (!std::isspace(line[i])) {
-                isNonEmpty = true;
-                break;
-            }
-        }
-
-        if (isNonEmpty) {
-            result += line + "\n"; // Mantém linhas não vazias
-        }
-    }
-
-    return result;
+	while (content[i] && isspace(content[i]))
+		i++;
+	content = content.substr(i);
+	i = content.length() - 1;
+	while (i > 0 && isspace(content[i]))
+		i--;
+	content = content.substr(0, i + 1);
 }

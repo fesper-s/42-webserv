@@ -11,7 +11,7 @@ class Parser {
         int checkAndReadFile(const std::string &config_file);
 
         std::string removeFileComments(std::string &content);
-        std::string removeFileWhiteSpace(std::string &content);
+        void removeFileWhiteSpace(std::string &content);
     private:
         //size_t  _nb_server;
 };
