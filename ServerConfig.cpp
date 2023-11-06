@@ -1,7 +1,6 @@
 #include "ServerConfig.hpp"
 
-ServerConfig::ServerConfig()
-{
+ServerConfig::ServerConfig() {
 	this->_port = 0;
 	this->_host = 0;
 	this->_server_name = "";
@@ -13,13 +12,10 @@ ServerConfig::ServerConfig()
 	this->initErrorPages();
 }
 
-ServerConfig::~ServerConfig() 
-{}
+ServerConfig::~ServerConfig() {}
 
-ServerConfig::ServerConfig(const ServerConfig &other)
-{
-	if (this != &other)
-	{
+ServerConfig::ServerConfig(const ServerConfig &other) {
+	if (this != &other) {
 		this->_server_name = other._server_name;
 		this->_root = other._root;
 		this->_host = other._host;
@@ -30,15 +26,12 @@ ServerConfig::ServerConfig(const ServerConfig &other)
 		this->_listen_fd = other._listen_fd;
 		this->_autoindex = other._autoindex;
 		this->_server_address = other._server_address;
-
 	}
 	return ;
 }
 
-ServerConfig &ServerConfig::operator=(const ServerConfig & rhs)
-{
-	if (this != &rhs)
-	{
+ServerConfig &ServerConfig::operator=(const ServerConfig & rhs) {
+	if (this != &rhs) {
 		this->_server_name = rhs._server_name;
 		this->_root = rhs._root;
 		this->_port = rhs._port;
@@ -53,8 +46,7 @@ ServerConfig &ServerConfig::operator=(const ServerConfig & rhs)
 	return (*this);
 }
 
-void ServerConfig::initErrorPages(void)
-{
+void ServerConfig::initErrorPages(void) {
 	_error_pages[301] = "";
 	_error_pages[302] = "";
 	_error_pages[400] = "";
@@ -72,47 +64,40 @@ void ServerConfig::initErrorPages(void)
 	_error_pages[505] = "";
 }
 
-void ServerConfig::setServerName(std::string serverName)
-{
+void ServerConfig::setServerName(std::string serverName) {
     checkToken(serverName);
     this->_server_name = serverName;
 }
 
-void ServerConfig::setHost(std::string parametr)
-{
+void ServerConfig::setHost(std::string parametr) {
 	checkToken(parametr);
 	if (parametr == "localhost")
 		parametr = "127.0.0.1";
     //verifica se o endereço IP é valido usando inet_pton para formata-lo em binário
-	if (!isValidHost(parametr))
-	{
+	if (!isValidHost(parametr)) {
         std::cout << "Wrong syntax: host" << std::endl;
         exit(EXIT_FAILURE);
     }
 	this->_host = inet_addr(parametr.data());
 }
 
-void ServerConfig::setRoot(std::string root)
-{
+void ServerConfig::setRoot(std::string root) {
 	checkToken(root);
-	if (ConfigFile::getTypePath(root) == 2)
-	{
+	if (ConfigFile::getTypePath(root) == 2) {
 		this->_root = root;
 		return ;
 	}
 	char dir[1024];
 	getcwd(dir, 1024);
 	std::string full_root = dir + root;
-	if (ConfigFile::getTypePath(full_root) != 2)
-    {
+	if (ConfigFile::getTypePath(full_root) != 2) {
 		std::cout << "Wrong syntax: root" << std::endl;
         exit(EXIT_FAILURE);
     }
 	this->_root = full_root;
 }
 
-void	ServerConfig::setFd(int fd)
-{
+void ServerConfig::setFd(int fd) {
 	this->_listen_fd = fd;
 }
 

@@ -1,29 +1,23 @@
 #include "Parser.hpp"
 
-Parser::Parser()
-{}
+Parser::Parser() {}
 
-Parser::~Parser()
-{}
+Parser::~Parser() {}
 
-int Parser::checkAndReadFile(const std::string &config_file)
-{
+int Parser::checkAndReadFile(const std::string &config_file) {
     std::string content;
     ConfigFile file(config_file);
 
-    if (file.getTypePath(file.getPath()) != 1)
-    {
+    if (file.getTypePath(file.getPath()) != 1) {
         std::cout << "file is invalid" << std::endl;
         exit(EXIT_FAILURE);
     }
-    if (file.checkFile(file.getPath(), 4) == -1)
-    {
+    if (file.checkFile(file.getPath(), 4) == -1) {
         std::cout << "file is invalid" << std::endl;
         exit(EXIT_FAILURE);
     }
     content = file.readFile(config_file);
-    if (content.empty())
-    {
+    if (content.empty()) {
 		std::cout << "File is empty" << std::endl;
         exit(EXIT_FAILURE);
     }
@@ -35,8 +29,7 @@ int Parser::checkAndReadFile(const std::string &config_file)
     return (0);
 }
 
-std::string Parser::removeFileComments(std::string &content)
-{
+std::string Parser::removeFileComments(std::string &content) {
     std::string result;
     std::istringstream iss(content);
     std::string line;
@@ -54,8 +47,7 @@ std::string Parser::removeFileComments(std::string &content)
 }
 
 
-std::string Parser::removeFileWhiteSpace(std::string &content)
-{
+std::string Parser::removeFileWhiteSpace(std::string &content) {
     std::string result;
     std::istringstream iss(content);
     std::string line;

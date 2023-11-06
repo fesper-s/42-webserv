@@ -2,10 +2,8 @@
 
 int main(int argc, char **argv) {
 
-	if (argc == 1 || argc == 2)
-	{
-
-		Parser	parser;
+	if (argc == 1 || argc == 2) {
+		Parser parser;
 		std::string conf;
 
 		if (argc == 1)

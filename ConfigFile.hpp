@@ -3,8 +3,7 @@
 
 #include "webserv.hpp"
 
-class ConfigFile
-{
+class ConfigFile {
     public:
         ConfigFile();
         ConfigFile(std::string const path);
