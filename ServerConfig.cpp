@@ -101,30 +101,24 @@ void ServerConfig::setFd(int fd) {
 	this->_listen_fd = fd;
 }
 
-/*
-void ServerConfig::setPort(std::string parametr)
-{
+void ServerConfig::setPort(std::string parametr) {
 	unsigned int port;
 	
 	port = 0;
 	checkToken(parametr);
-	for (size_t i = 0; i < parametr.length(); i++)
-	{
-		if (!std::isdigit(parametr[i]))
-        {
+	for (size_t i = 0; i < parametr.length(); i++) {
+		if (!std::isdigit(parametr[i])) {
 			std::cout << "Wrong syntax: port" << std::endl;
             exit(EXIT_FAILURE);
         }
 	}
 	port = ft_stoi((parametr));
-	if (port < 1 || port > 65636)
-    {
+	if (port < 1 || port > 65636) {
 		std::cout << "Wrong syntax: port" << std::endl;
         exit(EXIT_FAILURE);
     }
 	this->_port = (uint16_t) port;
 }
-*/
 
 bool ServerConfig::isValidHost(std::string host) const
 {

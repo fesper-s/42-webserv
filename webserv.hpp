@@ -15,7 +15,6 @@
 
 
 //network
-# include <sys/socket.h>
 # include <netinet/in.h>
 # include <arpa/inet.h>
 
@@ -23,6 +22,7 @@
 # include "Parser.hpp"
 # include "ConfigFile.hpp"
 # include "ServerConfig.hpp"
+# include "utils.hpp"
 
 # define MAX_CONTENT_LENGTH 30000000
 
