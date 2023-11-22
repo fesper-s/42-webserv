@@ -29,7 +29,7 @@ response_body = [
     "</head>",
     '<body class="bg-gradient-to-r from-gray-800 to-rose-600 h-screen w-screen flex justify-center items-center text-slate-100">',
     '<div class="flex flex-col space-y-7 flex justify-center items-center p-10">',
-    '<img src="assets/image_upload.svg" class="w-2/5" />',
+    '<img src="https://raw.githubusercontent.com/fesper-s/42-webserv/main/www/assets/image_upload.svg" class="w-2/5" />',
     '<div class="flex flex-col justify-center items-center space-y-3">',
     '<h1 class="font-bold text-3xl text-slate-400">Image uploaded to:</h1>',
     f'<code class="font-bold text-sm bg-slate-800 text-rose-400 p-3 rounded-md md:text-xl">{image_path}</code>',
