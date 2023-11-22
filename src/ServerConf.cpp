@@ -1,9 +1,9 @@
-#include "../inc/ManagerServ.hpp"
+#include "../inc/ServerConf.hpp"
 
-ManagerServ::ManagerServ() {}
-ManagerServ::~ManagerServ() {}
+ServerConf::ServerConf() {}
+ServerConf::~ServerConf() {}
 
-void ManagerServ::setupServers(std::vector<Server> servers) {
+void ServerConf::setupServers(std::vector<Server> servers) {
   std::cout << "Initializing servers...\n";
   serv = servers;
 
@@ -17,11 +17,11 @@ void ManagerServ::setupServers(std::vector<Server> servers) {
     }
     if (!isSameServ)
       it->setupServer();
-    LogService::logStartServer(*it);
+    Logs::logStartServer(*it);
   }
 }
 
-void ManagerServ::processServerRequests() {
+void ServerConf::processServerRequests() {
   fd_set receivedFdCopy;
   fd_set writeFdCopy;
   int selectStatus;
@@ -36,7 +36,7 @@ void ManagerServ::processServerRequests() {
     writeFdCopy = writeFdSet;
 
     if ((selectStatus = select(largestFd + 1, &receivedFdCopy, &writeFdCopy, NULL, &timer)) < 0)
-      LogService::printLog(RED_BOLD, FAILURE, "Error occurred during select operation. Reason: %s. Closing the connection...", strerror(errno));
+      Logs::printLog(RED_BOLD, FAILURE, "Error occurred during select operation. Reason: %s. Closing the connection...", strerror(errno));
     for (int i = 0; i <= largestFd; ++i) {
       if (FD_ISSET(i, &receivedFdCopy) && servsDict.count(i))
         acceptNewConnection(servsDict.find(i)->second);
@@ -56,47 +56,47 @@ void ManagerServ::processServerRequests() {
   }
 }
 
-void ManagerServ::handleClientTimeout() {
+void ServerConf::handleClientTimeout() {
   for (std::map<int, Client>::iterator it = clientsDict.begin(); it != clientsDict.end(); ++it) {
     if (time(NULL) - it->second.getLastMessageTime() > 30) {
-      LogService::printLog(YELLOW, SUCCESS, "The connection with Client %d has timed out. Closing the connection...", it->first);
+      Logs::printLog(YELLOW, SUCCESS, "The connection with Client %d has timed out. Closing the connection...", it->first);
       closeConnection(it->first);
       return;
     }
   }
 }
 
-void ManagerServ::initializeSets() {
+void ServerConf::initializeSets() {
   FD_ZERO(&receiveFdSet);
   FD_ZERO(&writeFdSet);
 
   for (std::vector<Server>::iterator it = serv.begin(); it != serv.end(); ++it) {
     if (listen(it->getFd(), 512) == -1)
-      LogService::printLog(RED_BOLD, FAILURE, "Failed to listen on socket. Reason: %s. Closing the connection...", strerror(errno));
+      Logs::printLog(RED_BOLD, FAILURE, "Failed to listen on socket. Reason: %s. Closing the connection...", strerror(errno));
     if (fcntl(it->getFd(), F_SETFL, O_NONBLOCK) < 0)
-      LogService::printLog(RED_BOLD, FAILURE, "Error setting non-blocking mode using fcntl. Reason: %s. Closing the connection...", strerror(errno));
+      Logs::printLog(RED_BOLD, FAILURE, "Error setting non-blocking mode using fcntl. Reason: %s. Closing the connection...", strerror(errno));
     addToSet(it->getFd(), receiveFdSet);
     servsDict.insert(std::make_pair(it->getFd(), *it));
   }
   largestFd = serv.back().getFd();
 }
 
-void ManagerServ::acceptNewConnection(Server &serv) {
+void ServerConf::acceptNewConnection(Server &serv) {
   struct sockaddr_in clientSocketAddr;
   long clientSocketAddrSize = sizeof(clientSocketAddr);
   int clientSocket;
   Client newClient(serv);
 
   if ((clientSocket = accept(serv.getFd(), (struct sockaddr *)&clientSocketAddr, (socklen_t *)&clientSocketAddrSize)) == -1) {
-    LogService::printLog(RED_BOLD, SUCCESS, "Encountered an error while accepting incoming connection. Reason: %s", strerror(errno));
+    Logs::printLog(RED_BOLD, SUCCESS, "Encountered an error while accepting incoming connection. Reason: %s", strerror(errno));
     return;
   }
-  LogService::printLog(GREEN_BOLD, SUCCESS, "New connection established");
+  Logs::printLog(GREEN_BOLD, SUCCESS, "New connection established");
 
   addToSet(clientSocket, receiveFdSet);
 
   if (fcntl(clientSocket, F_SETFL, O_NONBLOCK) < 0) {
-    LogService::printLog(RED_BOLD, FAILURE, "Error encountered while setting socket to non-blocking mode using fcntl. Reason: %s. Closing the connection...", strerror(errno));
+    Logs::printLog(RED_BOLD, FAILURE, "Error encountered while setting socket to non-blocking mode using fcntl. Reason: %s. Closing the connection...", strerror(errno));
     removeFromSet(clientSocket, receiveFdSet);
     close(clientSocket);
     return;
@@ -108,7 +108,7 @@ void ManagerServ::acceptNewConnection(Server &serv) {
   clientsDict.insert(std::make_pair(clientSocket, newClient));
 }
 
-void ManagerServ::closeConnection(const int fd) {
+void ServerConf::closeConnection(const int fd) {
   if (FD_ISSET(fd, &writeFdSet))
     removeFromSet(fd, writeFdSet);
   if (FD_ISSET(fd, &receiveFdSet))
@@ -117,7 +117,7 @@ void ManagerServ::closeConnection(const int fd) {
   clientsDict.erase(fd);
 }
 
-void ManagerServ::sendResponse(const int &i, Client &c) {
+void ServerConf::sendResponse(const int &i, Client &c) {
   int bytesSent;
   std::string response = c.response.getRes();
   if (response.length() >= 40000)
@@ -126,12 +126,12 @@ void ManagerServ::sendResponse(const int &i, Client &c) {
     bytesSent = write(i, response.c_str(), response.length());
 
   if (bytesSent < 0) {
-    LogService::printLog(RED_BOLD, SUCCESS, "Error occurred while sending response. Reason: %s", strerror(errno));
+    Logs::printLog(RED_BOLD, SUCCESS, "Error occurred while sending response. Reason: %s", strerror(errno));
     closeConnection(i);
   } else if (bytesSent == 0 || (size_t)bytesSent == response.length()) {
-    LogService::printLog(WHITE, SUCCESS, "Status<%d>", c.response.getCode());
+    Logs::printLog(WHITE, SUCCESS, "Status<%d>", c.response.getCode());
     if (c.request.isConnectionKeepAlive() == false || c.request.errorCodes() || c.response.getCgiState()) {
-      LogService::printLog(YELLOW, SUCCESS, "Connection with client %d has been terminated", i);
+      Logs::printLog(YELLOW, SUCCESS, "Connection with client %d has been terminated", i);
       closeConnection(i);
     } else {
       removeFromSet(i, writeFdSet);
@@ -144,14 +144,14 @@ void ManagerServ::sendResponse(const int &i, Client &c) {
   }
 }
 
-bool ManagerServ::checkServ(Client &client, std::vector<Server>::iterator it) {
+bool ServerConf::checkServ(Client &client, std::vector<Server>::iterator it) {
   bool s = client.request.getServerName() == it->getServerName();
   bool h = client.server.getHost() == it->getHost();
   bool p = client.server.getPort() == it->getPort();
   return s && h && p;
 }
 
-void ManagerServ::assignServer(Client &client) {
+void ServerConf::assignServer(Client &client) {
   for (std::vector<Server>::iterator it = serv.begin();
        it != serv.end(); ++it) {
     if (checkServ(client, it))
@@ -159,16 +159,16 @@ void ManagerServ::assignServer(Client &client) {
   }
 }
 
-void ManagerServ::readAndProcessRequest(const int &i, Client &client) {
+void ServerConf::readAndProcessRequest(const int &i, Client &client) {
   char buffer[40000];
   int bytesRead = read(i, buffer, 40000);
   if (bytesRead == 0) {
-    LogService::printLog(YELLOW, SUCCESS, "Connection with client %d has been successfully closed", i);
+    Logs::printLog(YELLOW, SUCCESS, "Connection with client %d has been successfully closed", i);
     closeConnection(i);
     return;
   }
   if (bytesRead < 0) {
-    LogService::printLog(RED_BOLD, SUCCESS, "Error occurred while reading from file descriptor %d. Reason: %s", i, strerror(errno));
+    Logs::printLog(RED_BOLD, SUCCESS, "Error occurred while reading from file descriptor %d. Reason: %s", i, strerror(errno));
     closeConnection(i);
     return;
   }
@@ -181,7 +181,7 @@ void ManagerServ::readAndProcessRequest(const int &i, Client &client) {
   if (client.request.isParsingDone() || client.request.errorCodes()) {
     assignServer(client);
     if (client.request.errorCodes() != 501)
-      LogService::printLog(BLUE, SUCCESS, "<%s> \"%s\"", client.request.getMethodStr().c_str(), client.request.getPath().c_str());
+      Logs::printLog(BLUE, SUCCESS, "<%s> \"%s\"", client.request.getMethodStr().c_str(), client.request.getPath().c_str());
     client.buildResponse();
     if (client.response.getCgiState()) {
       handleReqBody(client);
@@ -193,7 +193,7 @@ void ManagerServ::readAndProcessRequest(const int &i, Client &client) {
   }
 }
 
-void ManagerServ::handleReqBody(Client &client) {
+void ServerConf::handleReqBody(Client &client) {
   if (client.request.getBody().length() == 0) {
     std::string tmp;
     std::fstream file;
@@ -205,7 +205,7 @@ void ManagerServ::handleReqBody(Client &client) {
   }
 }
 
-void ManagerServ::sendCgiBody(Client &client, CgiPanel &cgi) {
+void ServerConf::sendCgiBody(Client &client, CgiPanel &cgi) {
   int bytesSent;
   std::string &req_body = client.request.getBody();
 
@@ -217,7 +217,7 @@ void ManagerServ::sendCgiBody(Client &client, CgiPanel &cgi) {
     bytesSent = write(cgi.pipeIn[1], req_body.c_str(), req_body.length());
 
   if (bytesSent < 0) {
-    LogService::printLog(RED_BOLD, SUCCESS, "Error occurred while sending CGI body. Reason: %s", strerror(errno));
+    Logs::printLog(RED_BOLD, SUCCESS, "Error occurred while sending CGI body. Reason: %s", strerror(errno));
     removeFromSet(cgi.pipeIn[1], writeFdSet);
     close(cgi.pipeIn[1]);
     close(cgi.pipeOut[1]);
@@ -232,7 +232,7 @@ void ManagerServ::sendCgiBody(Client &client, CgiPanel &cgi) {
   }
 }
 
-void ManagerServ::readCgiResponse(Client &client, CgiPanel &cgi) {
+void ServerConf::readCgiResponse(Client &client, CgiPanel &cgi) {
   char buffer[40000 * 2];
   int bytesRead = 0;
   bytesRead = read(cgi.pipeOut[0], buffer, 40000 * 2);
@@ -251,7 +251,7 @@ void ManagerServ::readCgiResponse(Client &client, CgiPanel &cgi) {
       client.response.responseContent.insert(0, "HTTP/1.1 200 OK\r\n");
     return;
   } else if (bytesRead < 0) {
-    LogService::printLog(RED_BOLD, SUCCESS, "Error occurred while reading from CGI script. Reason: %s", strerror(errno));
+    Logs::printLog(RED_BOLD, SUCCESS, "Error occurred while reading from CGI script. Reason: %s", strerror(errno));
     removeFromSet(cgi.pipeOut[0], receiveFdSet);
     close(cgi.pipeIn[0]);
     close(cgi.pipeOut[0]);
@@ -265,13 +265,13 @@ void ManagerServ::readCgiResponse(Client &client, CgiPanel &cgi) {
   }
 }
 
-void ManagerServ::addToSet(const int fd, fd_set &set) {
+void ServerConf::addToSet(const int fd, fd_set &set) {
   FD_SET(fd, &set);
   if (fd > largestFd)
     largestFd = fd;
 }
 
-void ManagerServ::removeFromSet(const int fd, fd_set &fdSet) {
+void ServerConf::removeFromSet(const int fd, fd_set &fdSet) {
   FD_CLR(fd, &fdSet);
   if (fd == largestFd)
     largestFd--;

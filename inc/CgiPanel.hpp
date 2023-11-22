@@ -3,7 +3,7 @@
 
 #include "Webserv.hpp"
 
-class Location;
+class LocateFile;
 class Request;
 class CgiPanel {
  private:
@@ -23,8 +23,8 @@ class CgiPanel {
   ~CgiPanel();
   CgiPanel(CgiPanel const &other);
   CgiPanel &operator=(CgiPanel const &rhs);
-  void initEnv(Request &req, const std::vector<Location>::iterator it_loc);
-  void initEnvCgi(Request &req, const std::vector<Location>::iterator it_loc);
+  void initEnv(Request &req, const std::vector<LocateFile>::iterator it_loc);
+  void initEnvCgi(Request &req, const std::vector<LocateFile>::iterator it_loc);
   void execute(short &error_code);
   void clear();
   void setContentLength(int length);

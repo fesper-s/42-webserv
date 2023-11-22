@@ -1,6 +1,6 @@
 NAME = webserv
 
-SRCS = ./src/CgiPanel.cpp ./src/Client.cpp ./src/FileConf.cpp ./src/Location.cpp ./src/LogService.cpp ./src/main.cpp ./src/ManagerServ.cpp ./src/Parser.cpp ./src/Request.cpp ./src/Response.cpp ./src/Server.cpp
+SRCS = ./src/CgiPanel.cpp ./src/Client.cpp ./src/FileConf.cpp ./src/LocateFile.cpp ./src/Logs.cpp ./src/main.cpp ./src/ServerConf.cpp ./src/Parser.cpp ./src/Request.cpp ./src/Response.cpp ./src/Server.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 

@@ -79,7 +79,7 @@ void Response::server() {
 
 void Response::locations() {
   if (location.length())
-    responseContent.append("Location: " + location + "\r\n");
+    responseContent.append("LocateFile: " + location + "\r\n");
 }
 
 void Response::date() {
@@ -116,7 +116,7 @@ static bool isDirectory(std::string path) {
   return (S_ISDIR(file_stat.st_mode));
 }
 
-static bool isAllowedMethod(HttpMethod &method, Location &location, short &code) {
+static bool isAllowedMethod(HttpMethod &method, LocateFile &location, short &code) {
   std::vector<short> methods = location.getMethods();
   if ((method == GET && !methods[0]) || (method == POST && !methods[1]) ||
       (method == DELETE && !methods[2])) {
@@ -126,7 +126,7 @@ static bool isAllowedMethod(HttpMethod &method, Location &location, short &code)
   return (0);
 }
 
-static bool checkReturn(Location &loc, short &code, std::string &location) {
+static bool checkReturn(LocateFile &loc, short &code, std::string &location) {
   if (loc.getReturn().empty())
     return (0);
   code = 301;
@@ -152,11 +152,11 @@ std::string Response::getErrorPage(short statusCode) {
   return ("<html>\r\n<head><title>" + toString(statusCode) + " " + Server::statusCodeString(statusCode) + " </title></head>\r\n" + "<body>\r\n" + "<center><h1>" + toString(statusCode) + " " + Server::statusCodeString(statusCode) + "</h1></center>\r\n");
 }
 
-static void replaceAlias(Location &location, Request &request, std::string &targetFile) {
+static void replaceAlias(LocateFile &location, Request &request, std::string &targetFile) {
   targetFile = combinePaths(location.getAlias(), request.getPath().substr(location.getPath().length()), "");
 }
 
-static void appendRoot(Location &location, Request &request, std::string &targetFile) {
+static void appendRoot(LocateFile &location, Request &request, std::string &targetFile) {
   targetFile = combinePaths(location.getRootLocation(), request.getPath(), "");
 }
 
@@ -251,10 +251,10 @@ int Response::handleCgi(std::string &locationKey) {
   return (0);
 }
 
-static void getLocationMatch(std::string &path, std::vector<Location> locations, std::string &locationKey) {
+static void getLocationMatch(std::string &path, std::vector<LocateFile> locations, std::string &locationKey) {
   size_t bigMatch = 0;
 
-  for (std::vector<Location>::const_iterator it = locations.begin(); it != locations.end(); ++it) {
+  for (std::vector<LocateFile>::const_iterator it = locations.begin(); it != locations.end(); ++it) {
     if (path.find(it->getPath()) == 0) {
       if (it->getPath() == "/" || path.length() == it->getPath().length() || path[it->getPath().length()] == '/') {
         if (it->getPath().length() > bigMatch) {
@@ -266,15 +266,15 @@ static void getLocationMatch(std::string &path, std::vector<Location> locations,
   }
 }
 
-bool Response::isMethodNotAllowed(Location &location) {
+bool Response::isMethodNotAllowed(LocateFile &location) {
   return isAllowedMethod(request.getHttpMethod(), location, code);
 }
 
-bool Response::isRequestBodySizeExceeded(const std::string &body, const Location &location) {
+bool Response::isRequestBodySizeExceeded(const std::string &body, const LocateFile &location) {
   return (body.length() > location.getMaxBodySize());
 }
 
-bool Response::checkLocationReturn(Location &location) {
+bool Response::checkLocationReturn(LocateFile &location) {
   return checkReturn(location, code, this->location);
 }
 
@@ -282,7 +282,7 @@ bool Response::isCgiPath(const std::string &path) {
   return (path.find("cgi") != std::string::npos);
 }
 
-bool Response::isCgiExtension(const std::string &targetFile, const Location &location) {
+bool Response::isCgiExtension(const std::string &targetFile, const LocateFile &location) {
   return (targetFile.rfind(location.getCgiExtension()[0]) != std::string::npos);
 }
 
@@ -348,7 +348,7 @@ int Response::handleTarget() {
   getLocationMatch(request.getPath(), serv.getLocations(), locationKey);
 
   if (!locationKey.empty()) {
-    Location targetLocation = *serv.getLocationKey(locationKey);
+    LocateFile targetLocation = *serv.getLocationKey(locationKey);
 
     if (isMethodNotAllowed(targetLocation)) {
       std::cout << "METHOD NOT ALLOWED \n";

@@ -1,6 +1,6 @@
-#include "../inc/Location.hpp"
+#include "../inc/LocateFile.hpp"
 
-Location::Location() {
+LocateFile::LocateFile() {
   this->path = "";
   this->root = "";
   this->autoIndex = false;
@@ -14,7 +14,7 @@ Location::Location() {
   this->methods.push_back(0);
 }
 
-Location::Location(const Location &copy) {
+LocateFile::LocateFile(const LocateFile &copy) {
   this->path = copy.path;
   this->root = copy.root;
   this->autoIndex = copy.autoIndex;
@@ -28,7 +28,7 @@ Location::Location(const Location &copy) {
   this->maxBodySize = copy.maxBodySize;
 }
 
-Location &Location::operator=(const Location &copy) {
+LocateFile &LocateFile::operator=(const LocateFile &copy) {
   this->path = copy.path;
   this->root = copy.root;
   this->autoIndex = copy.autoIndex;
@@ -44,20 +44,20 @@ Location &Location::operator=(const Location &copy) {
   return (*this);
 }
 
-Location::~Location() {}
+LocateFile::~LocateFile() {}
 
-void Location::setPath(std::string param) {
+void LocateFile::setPath(std::string param) {
   this->path = param;
 }
 
-void Location::setRootLocation(std::string param) {
+void LocateFile::setRootLocation(std::string param) {
   if (FileConf::getTypePath(param) == 2)
     this->root = param;
   else
     throw Error("Invalid root location. Please provide a valid path for the root location.");
 }
 
-void Location::setMethods(std::vector<std::string> methods) {
+void LocateFile::setMethods(std::vector<std::string> methods) {
   this->methods[0] = 0;
   this->methods[1] = 0;
   this->methods[2] = 0;
@@ -74,34 +74,34 @@ void Location::setMethods(std::vector<std::string> methods) {
   }
 }
 
-void Location::setAutoindex(std::string param) {
+void LocateFile::setAutoindex(std::string param) {
   if (param == "on" || param == "off")
     this->autoIndex = (param == "on");
   else
     throw Error("Incorrect autoindex value. Please specify 'on' or 'off' for the autoindex parameter.");
 }
 
-void Location::setIndexLocation(std::string param) {
+void LocateFile::setIndexLocation(std::string param) {
   this->index = param;
 }
 
-void Location::setReturn(std::string param) {
+void LocateFile::setReturn(std::string param) {
   this->returns = param;
 }
 
-void Location::setAlias(std::string param) {
+void LocateFile::setAlias(std::string param) {
   this->alias = param;
 }
 
-void Location::setCgiPath(std::vector<std::string> path) {
+void LocateFile::setCgiPath(std::vector<std::string> path) {
   this->cgiPath = path;
 }
 
-void Location::setCgiExtension(std::vector<std::string> extension) {
+void LocateFile::setCgiExtension(std::vector<std::string> extension) {
   this->cgiExt = extension;
 }
 
-void Location::setMaxBodySize(std::string param) {
+void LocateFile::setMaxBodySize(std::string param) {
   unsigned long bodySize = 0;
 
   for (size_t i = 0; i < param.length(); i++) {
@@ -114,50 +114,50 @@ void Location::setMaxBodySize(std::string param) {
   this->maxBodySize = bodySize;
 }
 
-void Location::setMaxBodySize(unsigned long param) {
+void LocateFile::setMaxBodySize(unsigned long param) {
   this->maxBodySize = param;
 }
 
-const std::string &Location::getPath() const {
+const std::string &LocateFile::getPath() const {
   return (this->path);
 }
 
-const std::string &Location::getRootLocation() const {
+const std::string &LocateFile::getRootLocation() const {
   return (this->root);
 }
 
-const std::string &Location::getIndexLocation() const {
+const std::string &LocateFile::getIndexLocation() const {
   return (this->index);
 }
 
-const std::vector<short> &Location::getMethods() const {
+const std::vector<short> &LocateFile::getMethods() const {
   return (this->methods);
 }
 
-const std::vector<std::string> &Location::getCgiPath() const {
+const std::vector<std::string> &LocateFile::getCgiPath() const {
   return (this->cgiPath);
 }
 
-const std::vector<std::string> &Location::getCgiExtension() const {
+const std::vector<std::string> &LocateFile::getCgiExtension() const {
   return (this->cgiExt);
 }
 
-const bool &Location::getAutoindex() const {
+const bool &LocateFile::getAutoindex() const {
   return (this->autoIndex);
 }
 
-const std::string &Location::getReturn() const {
+const std::string &LocateFile::getReturn() const {
   return (this->returns);
 }
 
-const std::string &Location::getAlias() const {
+const std::string &LocateFile::getAlias() const {
   return (this->alias);
 }
 
-const std::map<std::string, std::string> &Location::getExtensionPath() const {
+const std::map<std::string, std::string> &LocateFile::getExtensionPath() const {
   return (this->extPath);
 }
 
-const unsigned long &Location::getMaxBodySize() const {
+const unsigned long &LocateFile::getMaxBodySize() const {
   return (this->maxBodySize);
 }

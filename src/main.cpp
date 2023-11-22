@@ -1,4 +1,4 @@
-#include "../inc/ManagerServ.hpp"
+#include "../inc/ServerConf.hpp"
 #include "../inc/Webserv.hpp"
 
 int error(std::string errorMessage) {
@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
     else
       FileConf = "config/default.conf";
     Parser serverParser;
-    ManagerServ managerServ;
+    ServerConf managerServ;
     serverParser.parseServerFileConf(FileConf);
     managerServ.setupServers(serverParser.getServers());
     managerServ.processServerRequests();

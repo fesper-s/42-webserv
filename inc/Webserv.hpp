@@ -35,8 +35,8 @@
 #include <sys/socket.h>
 #include "CgiPanel.hpp"
 #include "FileConf.hpp"
-#include "Location.hpp"
-#include "LogService.hpp"
+#include "LocateFile.hpp"
+#include "Logs.hpp"
 #include "Parser.hpp"
 #include "Request.hpp"
 #include "Server.hpp"

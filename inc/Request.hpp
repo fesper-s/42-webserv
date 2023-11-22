@@ -1,5 +1,5 @@
-#ifndef HTTP_REQUEST_HPP
-#define HTTP_REQUEST_HPP
+#ifndef REQUEST_HPP
+#define REQUEST_HPP
 
 #include "Webserv.hpp"
 

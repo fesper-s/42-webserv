@@ -104,7 +104,7 @@ void CgiPanel::createArgv(const std::string &cgiExec) {
   argv[2] = NULL;
 }
 
-void CgiPanel::initEnvCgi(Request &req, const std::vector<Location>::iterator itLocation) {
+void CgiPanel::initEnvCgi(Request &req, const std::vector<LocateFile>::iterator itLocation) {
   std::string cgiExec = ("cgi/" + itLocation->getCgiPath()[0]).c_str();
   char *cwd = getcwd(NULL, 0);
   if (cgiPath[0] != '/') {
@@ -128,7 +128,7 @@ void CgiPanel::initEnvCgi(Request &req, const std::vector<Location>::iterator it
   delete[] cwd;
 }
 
-void CgiPanel::initEnv(Request &req, const std::vector<Location>::iterator itLocation) {
+void CgiPanel::initEnv(Request &req, const std::vector<LocateFile>::iterator itLocation) {
   int poz;
   std::string extension;
   std::string extPath;
@@ -179,7 +179,7 @@ void CgiPanel::execute(short &errorCode) {
   }
 
   if (pipe(pipeIn) < 0 || pipe(pipeOut) < 0) {
-    LogService::printLog(RED_BOLD, SUCCESS, "Failed to execute pipe() operation. Please check your system resources and try again.");
+    Logs::printLog(RED_BOLD, SUCCESS, "Failed to execute pipe() operation. Please check your system resources and try again.");
     closePipes();
     errorCode = 500;
     return;
@@ -195,7 +195,7 @@ void CgiPanel::execute(short &errorCode) {
     exit(this->exitStatus);
 
   } else if (this->cgiPid < 0) {
-    LogService::printLog(RED_BOLD, SUCCESS, "Fork failed. Unable to create a new process. Please check the system resources and try again.");
+    Logs::printLog(RED_BOLD, SUCCESS, "Fork failed. Unable to create a new process. Please check the system resources and try again.");
     closePipes();
     errorCode = 500;
   }

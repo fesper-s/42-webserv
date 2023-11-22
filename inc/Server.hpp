@@ -1,9 +1,9 @@
-#ifndef Server_HPP
-#define Server_HPP
+#ifndef SERVER_HPP
+#define SERVER_HPP
 
 #include "Webserv.hpp"
 
-class Location;
+class LocateFile;
 
 class Server {
  private:
@@ -15,7 +15,7 @@ class Server {
   std::string index;
   bool autoIndex;
   std::map<short, std::string> errorPages;
-  std::vector<Location> locations;
+  std::vector<LocateFile> locations;
   struct sockaddr_in serverAddress;
   int listenFd;
 
@@ -40,34 +40,34 @@ class Server {
   static std::string statusCodeString(short);
   bool isValidHost(std::string host) const;
   bool isValidErrorPages();
-  int isValidLocation(Location &location) const;
+  int isValidLocation(LocateFile &location) const;
 
   const std::string &getServerName();
   const uint16_t &getPort();
   const in_addr_t &getHost();
   const size_t &getClientMaxBodySize();
-  const std::vector<Location> &getLocations();
+  const std::vector<LocateFile> &getLocations();
   const std::string &getRoot();
   const std::map<short, std::string> &getErrorPages();
   const std::string &getIndex();
   const bool &getAutoindex();
   const std::string &getPathErrorPage(short key);
-  const std::vector<Location>::iterator getLocationKey(std::string key);
+  const std::vector<LocateFile>::iterator getLocationKey(std::string key);
 
-  void handleRootLocation(std::vector<std::string> &param, size_t &i, Location &newLocation);
-  void handleAllowMethods(std::vector<std::string> &param, size_t &i, Location &newLocation, bool &flagMethods);
-  void handleIndexLocation(std::vector<std::string> &param, size_t &i, Location &newLocation);
-  void handleAutoindex(std::vector<std::string> &param, size_t &i, const std::string &path, Location &newLocation, bool &flagAutoIndex);
-  void handleReturn(std::vector<std::string> &param, size_t &i, const std::string &path, Location &newLocation);
-  void handleAlias(std::vector<std::string> &param, size_t &i, const std::string &path, Location &newLocation);
-  void handleCgiExtension(std::vector<std::string> &param, size_t &i, Location &newLocation);
-  void handleCgiPath(std::vector<std::string> &param, size_t &i, Location &newLocation);
-  void handleMaxBodySize(std::vector<std::string> &param, size_t &i, Location &newLocation, bool &flagMaxSize);
-  void handleLocationDefaults(Location &newLocation, bool flagMaxSize);
+  void handleRootLocation(std::vector<std::string> &param, size_t &i, LocateFile &newLocation);
+  void handleAllowMethods(std::vector<std::string> &param, size_t &i, LocateFile &newLocation, bool &flagMethods);
+  void handleIndexLocation(std::vector<std::string> &param, size_t &i, LocateFile &newLocation);
+  void handleAutoindex(std::vector<std::string> &param, size_t &i, const std::string &path, LocateFile &newLocation, bool &flagAutoIndex);
+  void handleReturn(std::vector<std::string> &param, size_t &i, const std::string &path, LocateFile &newLocation);
+  void handleAlias(std::vector<std::string> &param, size_t &i, const std::string &path, LocateFile &newLocation);
+  void handleCgiExtension(std::vector<std::string> &param, size_t &i, LocateFile &newLocation);
+  void handleCgiPath(std::vector<std::string> &param, size_t &i, LocateFile &newLocation);
+  void handleMaxBodySize(std::vector<std::string> &param, size_t &i, LocateFile &newLocation, bool &flagMaxSize);
+  void handleLocationDefaults(LocateFile &newLocation, bool flagMaxSize);
   void handleLocationValidation(int valid);
 
-  int isValidRegularLocation(Location &location) const;
-  int isValidCgiLocation(Location &location) const;
+  int isValidRegularLocation(LocateFile &location) const;
+  int isValidCgiLocation(LocateFile &location) const;
   static void checkToken(std::string &parametr);
   bool checkLocation() const;
 

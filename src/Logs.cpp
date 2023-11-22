@@ -1,6 +1,6 @@
-#include "../inc/LogService.hpp"
+#include "../inc/Logs.hpp"
 
-std::string LogService::getCurrentDateTime() {
+std::string Logs::getCurrentDateTime() {
   std::time_t now = std::time(NULL);
   std::tm* time_info = std::localtime(&now);
   char date[100];
@@ -8,7 +8,7 @@ std::string LogService::getCurrentDateTime() {
   return std::string(date, date + std::strlen(date));
 }
 
-void LogService::printLog(const char* color, ExitStatus status, const char* str, ...) {
+void Logs::printLog(const char* color, ExitStatus status, const char* str, ...) {
   char output[8192];
   va_list args;
 
@@ -16,14 +16,14 @@ void LogService::printLog(const char* color, ExitStatus status, const char* str,
   vsnprintf(output, sizeof(output), str, args);
   va_end(args);
 
-  std::string errorAndExit = color + LogService::getCurrentDateTime() + output + RESET;
+  std::string errorAndExit = color + Logs::getCurrentDateTime() + output + RESET;
 
   if (status == FAILURE)
     throw Error(errorAndExit);
-  std::cout << color << LogService::getCurrentDateTime() << output << RESET << std::endl;
+  std::cout << color << Logs::getCurrentDateTime() << output << RESET << std::endl;
 }
 
-void LogService::printErrorCodeLog(const char* color, short& errorCode, short code, const char* str, ...) {
+void Logs::printErrorCodeLog(const char* color, short& errorCode, short code, const char* str, ...) {
   char output[8192];
   va_list args;
 
@@ -32,11 +32,11 @@ void LogService::printErrorCodeLog(const char* color, short& errorCode, short co
   va_end(args);
 
   errorCode = code;
-  std::cout << color << LogService::getCurrentDateTime() << output << RESET << std::endl;
+  std::cout << color << Logs::getCurrentDateTime() << output << RESET << std::endl;
   return;
 }
 
-void LogService::logStartServer(Server& server) {
+void Logs::logStartServer(Server& server) {
   char buf[INET_ADDRSTRLEN];
 
   const char* name = server.getServerName().c_str();
@@ -52,7 +52,7 @@ void LogService::logStartServer(Server& server) {
   std::cout << PURPLE;
   std::cout << "┌─────────────────────────────────────────────────┐" << std::endl;
   std::cout << "│   Server Address: " << serverAddress << std::setw(33 - serverAddress.size()) << "│" << std::right << std::endl;
-  std::cout << "│   " << name << ": " << LogService::getCurrentDateTime() << std::setw(25 - std::string(name).size()) << "│" << std::right << std::endl;
+  std::cout << "│   " << name << ": " << Logs::getCurrentDateTime() << std::setw(25 - std::string(name).size()) << "│" << std::right << std::endl;
   std::cout << "└─────────────────────────────────────────────────┘" << std::endl;
   std::cout << RESET;
 }

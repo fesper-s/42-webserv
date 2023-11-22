@@ -1,9 +1,9 @@
-#ifndef LOCATION_HPP
-#define LOCATION_HPP
+#ifndef LOCATEFILE_HPP
+#define LOCATEFILE_HPP
 
 #include "Webserv.hpp"
 
-class Location {
+class LocateFile {
  private:
   std::string path;
   std::string root;
@@ -19,10 +19,10 @@ class Location {
  public:
   std::map<std::string, std::string> extPath;
 
-  Location();
-  Location(const Location &copy);
-  Location &operator=(const Location &copy);
-  ~Location();
+  LocateFile();
+  LocateFile(const LocateFile &copy);
+  LocateFile &operator=(const LocateFile &copy);
+  ~LocateFile();
 
   void setPath(std::string param);
   void setRootLocation(std::string param);

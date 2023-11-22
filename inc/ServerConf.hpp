@@ -1,14 +1,14 @@
-#ifndef ManagerServ_HPP
-#define ManagerServ_HPP
+#ifndef SERVERCONF_HPP
+#define SERVERCONF_HPP
 
 #include "Client.hpp"
 #include "Response.hpp"
 #include "Webserv.hpp"
 
-class ManagerServ {
+class ServerConf {
  public:
-  ManagerServ();
-  ~ManagerServ();
+  ServerConf();
+  ~ServerConf();
   void setupServers(std::vector<Server>);
   void processServerRequests();
 

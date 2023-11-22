@@ -83,13 +83,13 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
         } else if (character == 'D')
           httpMethod = DELETE;
         else if (character == 'H') {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 501, "Unsupported method <%s>", "HEAD");
+          Logs::printErrorCodeLog(ORANGE, errorCode, 501, "Unsupported method <%s>", "HEAD");
           return;
         } else if (character == 'O') {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 501, "Unsupported method <%s>", "OPTIONS");
+          Logs::printErrorCodeLog(ORANGE, errorCode, 501, "Unsupported method <%s>", "OPTIONS");
           return;
         } else {
-          LogService::printLog(ORANGE, SUCCESS, "Invalid character \"%s\"", character);
+          Logs::printLog(ORANGE, SUCCESS, "Invalid character \"%s\"", character);
           return;
         }
         parsingStatus = REQUEST_LINE_METHOD;
@@ -99,13 +99,13 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
         if (character == 'O')
           httpMethod = POST;
         else if (character == 'U') {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 501, "Unsupported method <%s>", "PUT");
+          Logs::printErrorCodeLog(ORANGE, errorCode, 501, "Unsupported method <%s>", "PUT");
           return;
         } else if (character == 'A') {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 501, "Unsupported method <%s>", "PATCH");
+          Logs::printErrorCodeLog(ORANGE, errorCode, 501, "Unsupported method <%s>", "PATCH");
           return;
         } else {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 501, "Invalid character \"%s\"", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 501, "Invalid character \"%s\"", character);
           return;
         }
         httpMethod_index++;
@@ -116,7 +116,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
         if (character == httpMethodStr[httpMethod][httpMethod_index])
           httpMethod_index++;
         else {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 501, "Invalid character \"%s\"", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 501, "Invalid character \"%s\"", character);
           return;
         }
 
@@ -126,7 +126,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
       }
       case REQUEST_LINE_FIRST_SPACE: {
         if (character != ' ') {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         parsingStatus = REQUEST_LINE_URI_PATH_SLASH;
@@ -137,7 +137,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
           parsingStatus = REQUEST_LINE_URI_PATH;
           storage.clear();
         } else {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         break;
@@ -159,10 +159,10 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
           storage.clear();
           continue;
         } else if (!isValidURIChar(character)) {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         } else if (i > MAX_URI_LENGTH) {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 414, "URI exceeds maximum length: \"%s\"", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 414, "URI exceeds maximum length: \"%s\"", character);
           return;
         }
         break;
@@ -179,10 +179,10 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
           storage.clear();
           continue;
         } else if (!isValidURIChar(character)) {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         } else if (i > MAX_URI_LENGTH) {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 414, "URI exceeds maximum length: \"%s\"", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 414, "URI exceeds maximum length: \"%s\"", character);
           return;
         }
         break;
@@ -193,21 +193,21 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
           storage.clear();
           continue;
         } else if (!isValidURIChar(character)) {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         } else if (i > MAX_URI_LENGTH) {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 414, "URI exceeds maximum length: \"%s\"", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 414, "URI exceeds maximum length: \"%s\"", character);
           return;
         }
         break;
       }
       case REQUEST_LINE_VER: {
         if (isValidUriPosition(path)) {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         if (character != 'H') {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         parsingStatus = REQUEST_LINE_HT;
@@ -215,7 +215,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
       }
       case REQUEST_LINE_HT: {
         if (character != 'T') {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         parsingStatus = REQUEST_LINE_HTT;
@@ -223,7 +223,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
       }
       case REQUEST_LINE_HTT: {
         if (character != 'T') {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         parsingStatus = REQUEST_LINE_HTTP;
@@ -231,7 +231,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
       }
       case REQUEST_LINE_HTTP: {
         if (character != 'P') {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         parsingStatus = REQUEST_LINE_HTTP_SLASH;
@@ -239,7 +239,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
       }
       case REQUEST_LINE_HTTP_SLASH: {
         if (character != '/') {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         parsingStatus = REQUEST_LINE_MAJOR;
@@ -247,7 +247,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
       }
       case REQUEST_LINE_MAJOR: {
         if (!isdigit(character)) {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         verMajor = character;
@@ -257,7 +257,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
       }
       case REQUEST_LINE_DOT: {
         if (character != '.') {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         parsingStatus = REQUEST_LINE_MINOR;
@@ -265,7 +265,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
       }
       case REQUEST_LINE_MINOR: {
         if (!isdigit(character)) {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         verMinor = character;
@@ -274,7 +274,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
       }
       case REQUEST_LINE_CR: {
         if (character != '\r') {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         parsingStatus = REQUEST_LINE_LF;
@@ -282,7 +282,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
       }
       case REQUEST_LINE_LF: {
         if (character != '\n') {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         parsingStatus = FIELD_NAME_START;
@@ -295,7 +295,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
         else if (isValidTokenChar(character))
           parsingStatus = FIELD_NAME;
         else {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         break;
@@ -316,7 +316,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
           }
           continue;
         } else {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         break;
@@ -328,7 +328,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
           parsingStatus = FIELD_VALUE;
           continue;
         } else if (!isValidTokenChar(character)) {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         break;
@@ -348,14 +348,14 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
           parsingStatus = FIELD_NAME_START;
           continue;
         } else {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         break;
       }
       case CHUNKED_LENGTH_BEGIN: {
         if (isxdigit(character) == 0) {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         s.str("");
@@ -387,7 +387,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
         if (character == '\r')
           parsingStatus = CHUNKED_END_LF;
         else {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         continue;
@@ -399,7 +399,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
           else
             parsingStatus = CHUNKED_DATA;
         } else {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         continue;
@@ -420,7 +420,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
         if (character == '\r')
           parsingStatus = CHUNKED_DATA_LF;
         else {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         continue;
@@ -429,14 +429,14 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
         if (character == '\n')
           parsingStatus = CHUNKED_LENGTH_BEGIN;
         else {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         continue;
       }
       case CHUNKED_END_CR: {
         if (character != '\r') {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         parsingStatus = CHUNKED_END_LF;
@@ -444,7 +444,7 @@ void Request::parseHTTPRequestData(char *data, size_t size) {
       }
       case CHUNKED_END_LF: {
         if (character != '\n') {
-          LogService::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
+          Logs::printErrorCodeLog(ORANGE, errorCode, 400, "Unexpected character \"%s\" found", character);
           return;
         }
         bodyDoneFlag = true;

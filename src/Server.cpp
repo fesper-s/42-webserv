@@ -241,7 +241,7 @@ void Server::setLocation(std::string path, std::vector<std::string> param) {
   if (param.size() % 2 != 0)
     throw Error("Error page initialization failed");
 
-  Location newLocation;
+  LocateFile newLocation;
   std::vector<std::string> methods;
   bool flagMethods = false;
   bool flagAutoIndex = false;
@@ -281,7 +281,7 @@ void Server::setLocation(std::string path, std::vector<std::string> param) {
   this->locations.push_back(newLocation);
 }
 
-void Server::handleRootLocation(std::vector<std::string>& param, size_t& i, Location& newLocation) {
+void Server::handleRootLocation(std::vector<std::string>& param, size_t& i, LocateFile& newLocation) {
   if (!newLocation.getRootLocation().empty())
     throw Error("Root of location is duplicated");
   checkToken(param[++i]);
@@ -289,7 +289,7 @@ void Server::handleRootLocation(std::vector<std::string>& param, size_t& i, Loca
   newLocation.setRootLocation(rootLocation);
 }
 
-void Server::handleAllowMethods(std::vector<std::string>& param, size_t& i, Location& newLocation, bool& flagMethods) {
+void Server::handleAllowMethods(std::vector<std::string>& param, size_t& i, LocateFile& newLocation, bool& flagMethods) {
   if (flagMethods)
     throw Error("Allow_methods of location is duplicated");
   std::vector<std::string> methods;
@@ -308,7 +308,7 @@ void Server::handleAllowMethods(std::vector<std::string>& param, size_t& i, Loca
   flagMethods = true;
 }
 
-void Server::handleAutoindex(std::vector<std::string>& param, size_t& i, const std::string& path, Location& newLocation, bool& flagAutoIndex) {
+void Server::handleAutoindex(std::vector<std::string>& param, size_t& i, const std::string& path, LocateFile& newLocation, bool& flagAutoIndex) {
   if (path == "/cgi")
     throw Error("param autoindex not allowed for CGI");
   if (flagAutoIndex)
@@ -318,14 +318,14 @@ void Server::handleAutoindex(std::vector<std::string>& param, size_t& i, const s
   flagAutoIndex = true;
 }
 
-void Server::handleIndexLocation(std::vector<std::string>& param, size_t& i, Location& newLocation) {
+void Server::handleIndexLocation(std::vector<std::string>& param, size_t& i, LocateFile& newLocation) {
   if (!newLocation.getIndexLocation().empty())
     throw Error("Index of location is duplicated");
   checkToken(param[++i]);
   newLocation.setIndexLocation(param[i]);
 }
 
-void Server::handleReturn(std::vector<std::string>& param, size_t& i, const std::string& path, Location& newLocation) {
+void Server::handleReturn(std::vector<std::string>& param, size_t& i, const std::string& path, LocateFile& newLocation) {
   if (path == "/cgi")
     throw Error("param return not allowed for CGI");
   if (!newLocation.getReturn().empty())
@@ -334,7 +334,7 @@ void Server::handleReturn(std::vector<std::string>& param, size_t& i, const std:
   newLocation.setReturn(param[i]);
 }
 
-void Server::handleAlias(std::vector<std::string>& param, size_t& i, const std::string& path, Location& newLocation) {
+void Server::handleAlias(std::vector<std::string>& param, size_t& i, const std::string& path, LocateFile& newLocation) {
   if (path == "/cgi")
     throw Error("param alias not allowed for CGI");
   if (!newLocation.getAlias().empty())
@@ -343,7 +343,7 @@ void Server::handleAlias(std::vector<std::string>& param, size_t& i, const std::
   newLocation.setAlias(param[i]);
 }
 
-void Server::handleCgiExtension(std::vector<std::string>& param, size_t& i, Location& newLocation) {
+void Server::handleCgiExtension(std::vector<std::string>& param, size_t& i, LocateFile& newLocation) {
   std::vector<std::string> extension;
   while (++i < param.size()) {
     if (param[i].find(";") != std::string::npos) {
@@ -359,7 +359,7 @@ void Server::handleCgiExtension(std::vector<std::string>& param, size_t& i, Loca
   newLocation.setCgiExtension(extension);
 }
 
-void Server::handleCgiPath(std::vector<std::string>& param, size_t& i, Location& newLocation) {
+void Server::handleCgiPath(std::vector<std::string>& param, size_t& i, LocateFile& newLocation) {
   std::vector<std::string> path;
   while (++i < param.size()) {
     if (param[i].find(";") != std::string::npos) {
@@ -377,7 +377,7 @@ void Server::handleCgiPath(std::vector<std::string>& param, size_t& i, Location&
   newLocation.setCgiPath(path);
 }
 
-void Server::handleMaxBodySize(std::vector<std::string>& param, size_t& i, Location& newLocation, bool& flagMaxSize) {
+void Server::handleMaxBodySize(std::vector<std::string>& param, size_t& i, LocateFile& newLocation, bool& flagMaxSize) {
   if (flagMaxSize)
     throw Error("Max_body_size of location is duplicated");
   checkToken(param[++i]);
@@ -385,7 +385,7 @@ void Server::handleMaxBodySize(std::vector<std::string>& param, size_t& i, Locat
   flagMaxSize = true;
 }
 
-void Server::handleLocationDefaults(Location& newLocation, bool flagMaxSize) {
+void Server::handleLocationDefaults(LocateFile& newLocation, bool flagMaxSize) {
   if (newLocation.getPath() != "/cgi" && newLocation.getIndexLocation().empty())
     newLocation.setIndexLocation(this->index);
   if (!flagMaxSize)
@@ -423,7 +423,7 @@ bool Server::isValidErrorPages() {
   return (true);
 }
 
-int Server::isValidLocation(Location& location) const {
+int Server::isValidLocation(LocateFile& location) const {
   if (location.getPath() == "/cgi") {
     return isValidCgiLocation(location);
   } else {
@@ -431,7 +431,7 @@ int Server::isValidLocation(Location& location) const {
   }
 }
 
-int Server::isValidCgiLocation(Location& location) const {
+int Server::isValidCgiLocation(LocateFile& location) const {
   if (location.getCgiPath().empty() || location.getCgiExtension().empty() || location.getIndexLocation().empty()) {
     return 1;
   }
@@ -483,7 +483,7 @@ int Server::isValidCgiLocation(Location& location) const {
   return 0;
 }
 
-int Server::isValidRegularLocation(Location& location) const {
+int Server::isValidRegularLocation(LocateFile& location) const {
   if (location.getPath()[0] != '/') {
     return 2;
   }
@@ -531,7 +531,7 @@ const size_t& Server::getClientMaxBodySize() {
   return (this->maxBodySize);
 }
 
-const std::vector<Location>& Server::getLocations() {
+const std::vector<LocateFile>& Server::getLocations() {
   return (this->locations);
 }
 
@@ -554,8 +554,8 @@ const std::string& Server::getPathErrorPage(short key) {
   return (it->second);
 }
 
-const std::vector<Location>::iterator Server::getLocationKey(std::string key) {
-  std::vector<Location>::iterator it;
+const std::vector<LocateFile>::iterator Server::getLocationKey(std::string key) {
+  std::vector<LocateFile>::iterator it;
   for (it = this->locations.begin(); it != this->locations.end(); it++) {
     if (it->getPath() == key)
       return (it);
@@ -573,8 +573,8 @@ void Server::checkToken(std::string& param) {
 bool Server::checkLocation() const {
   if (this->locations.size() < 2)
     return (false);
-  std::vector<Location>::const_iterator it1;
-  std::vector<Location>::const_iterator it2;
+  std::vector<LocateFile>::const_iterator it1;
+  std::vector<LocateFile>::const_iterator it2;
   for (it1 = this->locations.begin(); it1 != this->locations.end() - 1; it1++) {
     for (it2 = it1 + 1; it2 != this->locations.end(); it2++) {
       if (it1->getPath() == it2->getPath())
@@ -586,7 +586,7 @@ bool Server::checkLocation() const {
 
 void Server::setupServer(void) {
   if ((listenFd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-    LogService::printLog(RED_BOLD, FAILURE, "Failed to create socket: %s. Closing...", strerror(errno));
+    Logs::printLog(RED_BOLD, FAILURE, "Failed to create socket: %s. Closing...", strerror(errno));
 
   int option_value = 1;
   setsockopt(listenFd, SOL_SOCKET, SO_REUSEADDR, &option_value, sizeof(int));
@@ -595,5 +595,5 @@ void Server::setupServer(void) {
   serverAddress.sin_addr.s_addr = host;
   serverAddress.sin_port = htons(port);
   if (bind(listenFd, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) == -1)
-    LogService::printLog(RED_BOLD, FAILURE, "Failed to bind: %s. Closing...", strerror(errno));
+    Logs::printLog(RED_BOLD, FAILURE, "Failed to bind: %s. Closing...", strerror(errno));
 }

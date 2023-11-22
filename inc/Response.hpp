@@ -32,11 +32,11 @@ class Response {
   bool isBoundaryLine(const std::string &line, const std::string &boundary);
   bool isEndBoundaryLine(const std::string &line, const std::string &boundary);
   std::string removeBoundary(std::string &body, const std::string &boundary);
-  bool isMethodNotAllowed(Location &location);
-  bool isRequestBodySizeExceeded(const std::string &body, const Location &location);
-  bool checkLocationReturn(Location &location);
+  bool isMethodNotAllowed(LocateFile &location);
+  bool isRequestBodySizeExceeded(const std::string &body, const LocateFile &location);
+  bool checkLocationReturn(LocateFile &location);
   bool isCgiPath(const std::string &path);
-  bool isCgiExtension(const std::string &targetFile, const Location &location);
+  bool isCgiExtension(const std::string &targetFile, const LocateFile &location);
   bool handleIndexLocation(const std::string &indexLocation, bool autoindex);
   bool handleNonLocation(const std::string &root, Request &request);
   bool isBodySizeExceeded();

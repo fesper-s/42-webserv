@@ -1,5 +1,5 @@
-#ifndef LogService_HPP
-#define LogService_HPP
+#ifndef LOGS_HPP
+#define LOGS_HPP
 
 #include "Webserv.hpp"
 
@@ -19,7 +19,7 @@ enum ExitStatus {
 
 class Request;
 class Server;
-class LogService {
+class Logs {
  public:
   static std::string getCurrentDateTime();
   static void printLog(const char* color, ExitStatus status, const char* str, ...);
