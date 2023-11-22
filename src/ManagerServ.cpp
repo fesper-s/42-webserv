@@ -205,7 +205,7 @@ void ManagerServ::handleReqBody(Client &client) {
   }
 }
 
-void ManagerServ::sendCgiBody(Client &client, CgiController &cgi) {
+void ManagerServ::sendCgiBody(Client &client, CgiPanel &cgi) {
   int bytesSent;
   std::string &req_body = client.request.getBody();
 
@@ -232,7 +232,7 @@ void ManagerServ::sendCgiBody(Client &client, CgiController &cgi) {
   }
 }
 
-void ManagerServ::readCgiResponse(Client &client, CgiController &cgi) {
+void ManagerServ::readCgiResponse(Client &client, CgiPanel &cgi) {
   char buffer[40000 * 2];
   int bytesRead = 0;
   bytesRead = read(cgi.pipeOut[0], buffer, 40000 * 2);

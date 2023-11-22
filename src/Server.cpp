@@ -80,14 +80,14 @@ void Server::setRoot(std::string root) {
   checkToken(root);
   char dir[1024];
   getcwd(dir, 1024);
-  if (ConfigFile::getTypePath(root) != 2)
+  if (FileConf::getTypePath(root) != 2)
     ;
   else {
     this->root = root;
     return;
   }
   std::string full_root = dir + root;
-  if (ConfigFile::getTypePath(full_root) == 2)
+  if (FileConf::getTypePath(full_root) == 2)
     this->root = full_root;
   else
     throw Error("Invalid root directory. Please provide a valid directory path");
@@ -222,12 +222,12 @@ void Server::setErrorPages(std::vector<std::string>& param) {
     checkToken(path);
 
     std::string fullPath = this->root + path;
-    int type = ConfigFile::getTypePath(fullPath);
+    int type = FileConf::getTypePath(fullPath);
     if (type != 2) {
-      if (ConfigFile::getTypePath(fullPath) != 1)
+      if (FileConf::getTypePath(fullPath) != 1)
         throw Error("Incorrect path for error page file: " + fullPath);
 
-      if (ConfigFile::checkAccessFile(fullPath, 0) == -1 || ConfigFile::checkAccessFile(fullPath, 4) == -1)
+      if (FileConf::checkAccessFile(fullPath, 0) == -1 || FileConf::checkAccessFile(fullPath, 4) == -1)
         throw Error("Error page file: " + fullPath + " is not accessible");
     }
 
@@ -285,7 +285,7 @@ void Server::handleRootLocation(std::vector<std::string>& param, size_t& i, Loca
   if (!newLocation.getRootLocation().empty())
     throw Error("Root of location is duplicated");
   checkToken(param[++i]);
-  std::string rootLocation = ConfigFile::getTypePath(param[i]) == 2 ? param[i] : (this->root + param[i]);
+  std::string rootLocation = FileConf::getTypePath(param[i]) == 2 ? param[i] : (this->root + param[i]);
   newLocation.setRootLocation(rootLocation);
 }
 
@@ -417,7 +417,7 @@ bool Server::isValidErrorPages() {
   for (it = this->errorPages.begin(); it != this->errorPages.end(); it++) {
     if (it->first < 100 || it->first > 599)
       return (false);
-    if (ConfigFile::checkAccessFile(getRoot() + it->second, 0) < 0 || ConfigFile::checkAccessFile(getRoot() + it->second, 4) < 0)
+    if (FileConf::checkAccessFile(getRoot() + it->second, 0) < 0 || FileConf::checkAccessFile(getRoot() + it->second, 4) < 0)
       return (false);
   }
   return (true);
@@ -436,14 +436,14 @@ int Server::isValidCgiLocation(Location& location) const {
     return 1;
   }
 
-  if (ConfigFile::checkAccessFile(location.getIndexLocation(), 4) < 0) {
+  if (FileConf::checkAccessFile(location.getIndexLocation(), 4) < 0) {
     std::string path = location.getRootLocation() + location.getPath() + "/" + location.getIndexLocation();
-    if (ConfigFile::getTypePath(path) != 1) {
+    if (FileConf::getTypePath(path) != 1) {
       std::string root = getcwd(NULL, 0);
       location.setRootLocation(root);
       path = root + location.getPath() + "/" + location.getIndexLocation();
     }
-    if (path.empty() || ConfigFile::getTypePath(path) != 1 || ConfigFile::checkAccessFile(path, 4) < 0) {
+    if (path.empty() || FileConf::getTypePath(path) != 1 || FileConf::checkAccessFile(path, 4) < 0) {
       return 1;
     }
   }
@@ -455,7 +455,7 @@ int Server::isValidCgiLocation(Location& location) const {
   std::vector<std::string>::const_iterator itPath;
   for (itPath = location.getCgiPath().begin(); itPath != location.getCgiPath().end(); ++itPath) {
     const std::string& cgiPath = *itPath;
-    if (ConfigFile::getTypePath(cgiPath) < 0) {
+    if (FileConf::getTypePath(cgiPath) < 0) {
       return 1;
     }
   }
@@ -492,15 +492,15 @@ int Server::isValidRegularLocation(Location& location) const {
     location.setRootLocation(this->root);
   }
 
-  if (ConfigFile::isFileExistAndReadable(location.getRootLocation() + location.getPath() + "/", location.getIndexLocation())) {
+  if (FileConf::isFileExistAndReadable(location.getRootLocation() + location.getPath() + "/", location.getIndexLocation())) {
     return 5;
   }
 
-  if (!location.getReturn().empty() && ConfigFile::isFileExistAndReadable(location.getRootLocation(), location.getReturn())) {
+  if (!location.getReturn().empty() && FileConf::isFileExistAndReadable(location.getRootLocation(), location.getReturn())) {
     return 3;
   }
 
-  if (!location.getAlias().empty() && ConfigFile::isFileExistAndReadable(location.getRootLocation(), location.getAlias())) {
+  if (!location.getAlias().empty() && FileConf::isFileExistAndReadable(location.getRootLocation(), location.getAlias())) {
     return 4;
   }
 

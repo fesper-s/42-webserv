@@ -26,8 +26,8 @@ class ManagerServ {
   void readAndProcessRequest(const int &, Client &);
   void handleReqBody(Client &);
   void sendResponse(const int &, Client &);
-  void sendCgiBody(Client &, CgiController &);
-  void readCgiResponse(Client &, CgiController &);
+  void sendCgiBody(Client &, CgiPanel &);
+  void readCgiResponse(Client &, CgiPanel &);
   void closeConnection(const int);
   void assignServer(Client &);
   void addToSet(const int, fd_set &);

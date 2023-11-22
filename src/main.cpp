@@ -13,14 +13,14 @@ int main(int argc, char **argv) {
     if (argc != 1 && argc != 2)
       throw std::invalid_argument("Invalid number of arguments. Usage: ./webserv <config_file>.conf.");
     signal(SIGPIPE, SIG_IGN);
-    std::string configFile;
+    std::string FileConf;
     if (argc == 2)
-      configFile = (argv[1]);
+      FileConf = (argv[1]);
     else
-      configFile = "config/default.conf";
+      FileConf = "config/default.conf";
     Parser serverParser;
     ManagerServ managerServ;
-    serverParser.parseServerConfigFile(configFile);
+    serverParser.parseServerFileConf(FileConf);
     managerServ.setupServers(serverParser.getServers());
     managerServ.processServerRequests();
   } catch (std::exception &err) {

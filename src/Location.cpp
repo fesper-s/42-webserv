@@ -51,7 +51,7 @@ void Location::setPath(std::string param) {
 }
 
 void Location::setRootLocation(std::string param) {
-  if (ConfigFile::getTypePath(param) == 2)
+  if (FileConf::getTypePath(param) == 2)
     this->root = param;
   else
     throw Error("Invalid root location. Please provide a valid path for the root location.");

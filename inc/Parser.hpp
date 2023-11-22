@@ -34,7 +34,7 @@ class Parser {
   void setDefaultServerValues(Server &server);
   void performServerValidations(Server &server);
   void createServerFromConfig(std::string &config, Server &server);
-  int parseServerConfigFile(const std::string &config_file);
+  int parseServerFileConf(const std::string &config_file);
 
  private:
   std::vector<Server> serverList;

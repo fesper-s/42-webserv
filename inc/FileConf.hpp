@@ -1,5 +1,5 @@
-#ifndef CONFIGFILE_HPP
-#define CONFIGFILE_HPP
+#ifndef FILECONG_HPP
+#define FILECONG_HPP
 
 #include "Webserv.hpp"
 
@@ -10,14 +10,14 @@ enum FileType {
   INVALID_TYPE = -1,
 };
 
-class ConfigFile {
+class FileConf {
  private:
   std::string path;
 
  public:
-  ConfigFile();
-  ConfigFile(std::string const path);
-  ~ConfigFile();
+  FileConf();
+  FileConf(std::string const path);
+  ~FileConf();
 
   static int getTypePath(std::string const path);
   static int checkAccessFile(std::string const path, int mode);

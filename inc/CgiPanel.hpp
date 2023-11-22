@@ -1,11 +1,11 @@
-#ifndef CgiController_HPP
-#define CgiController_HPP
+#ifndef CGIPANEL_HPP
+#define CGIPANEL_HPP
 
 #include "Webserv.hpp"
 
 class Location;
 class Request;
-class CgiController {
+class CgiPanel {
  private:
   std::map<std::string, std::string> env;
   char **chEnv;
@@ -18,11 +18,11 @@ class CgiController {
   int pipeIn[2];
   int pipeOut[2];
 
-  CgiController();
-  CgiController(std::string path);
-  ~CgiController();
-  CgiController(CgiController const &other);
-  CgiController &operator=(CgiController const &rhs);
+  CgiPanel();
+  CgiPanel(std::string path);
+  ~CgiPanel();
+  CgiPanel(CgiPanel const &other);
+  CgiPanel &operator=(CgiPanel const &rhs);
   void initEnv(Request &req, const std::vector<Location>::iterator it_loc);
   void initEnvCgi(Request &req, const std::vector<Location>::iterator it_loc);
   void execute(short &error_code);

@@ -1,6 +1,6 @@
-#include "../inc/CgiController.hpp"
+#include "../inc/CgiPanel.hpp"
 
-CgiController::CgiController() {
+CgiPanel::CgiPanel() {
   this->cgiPid = -1;
   this->exitStatus = 0;
   this->cgiPath = "";
@@ -8,7 +8,7 @@ CgiController::CgiController() {
   this->argv = NULL;
 }
 
-CgiController::CgiController(std::string path) {
+CgiPanel::CgiPanel(std::string path) {
   this->cgiPid = -1;
   this->exitStatus = 0;
   this->cgiPath = path;
@@ -16,11 +16,11 @@ CgiController::CgiController(std::string path) {
   this->argv = NULL;
 }
 
-CgiController::~CgiController() {
+CgiPanel::~CgiPanel() {
   clear();
 }
 
-CgiController::CgiController(const CgiController &copy) {
+CgiPanel::CgiPanel(const CgiPanel &copy) {
   this->env = copy.env;
   this->chEnv = copy.chEnv;
   this->argv = copy.argv;
@@ -29,7 +29,7 @@ CgiController::CgiController(const CgiController &copy) {
   this->exitStatus = copy.exitStatus;
 }
 
-CgiController &CgiController::operator=(const CgiController &copy) {
+CgiPanel &CgiPanel::operator=(const CgiPanel &copy) {
   this->env = copy.env;
   this->chEnv = copy.chEnv;
   this->argv = copy.argv;
@@ -39,29 +39,29 @@ CgiController &CgiController::operator=(const CgiController &copy) {
   return (*this);
 }
 
-void CgiController::setCgiPath(const std::string &cgiPath) {
+void CgiPanel::setCgiPath(const std::string &cgiPath) {
   this->cgiPath = cgiPath;
 }
 
-const pid_t &CgiController::getCgiPid() const {
+const pid_t &CgiPanel::getCgiPid() const {
   return (this->cgiPid);
 }
 
-const std::string &CgiController::getCgiPath() const {
+const std::string &CgiPanel::getCgiPath() const {
   return (this->cgiPath);
 }
 
-void CgiController::setContentLength(int length) {
+void CgiPanel::setContentLength(int length) {
   std::stringstream out;
   out << length;
   env["CONTENT_LENGTH"] = out.str();
 }
 
-void CgiController::setContentType(const std::string &contentType) {
+void CgiPanel::setContentType(const std::string &contentType) {
   env["CONTENT_TYPE"] = contentType;
 }
 
-void CgiController::setDefaultEnvValues(Request &req, std::string cgiExec) {
+void CgiPanel::setDefaultEnvValues(Request &req, std::string cgiExec) {
   env["GATEWAY_INTERFACE"] = "CGI/1.1";
   env["SCRIPT_NAME"] = cgiExec;
   env["SCRIPT_FILENAME"] = cgiPath;
@@ -76,7 +76,7 @@ void CgiController::setDefaultEnvValues(Request &req, std::string cgiExec) {
   env["SERVER_SOFTWARE"] = "CHEETAHS";
 }
 
-void CgiController::setRequestHeaders(Request &req) {
+void CgiPanel::setRequestHeaders(Request &req) {
   std::map<std::string, std::string> requestHeaders = req.getHeaders();
   for (std::map<std::string, std::string>::iterator it = requestHeaders.begin(); it != requestHeaders.end(); ++it) {
     std::string name = it->first;
@@ -86,7 +86,7 @@ void CgiController::setRequestHeaders(Request &req) {
   }
 }
 
-void CgiController::createChEnv() {
+void CgiPanel::createChEnv() {
   chEnv = new char *[env.size() + 1];
   int i = 0;
   for (std::map<std::string, std::string>::const_iterator it = env.begin(); it != env.end(); ++it) {
@@ -97,14 +97,14 @@ void CgiController::createChEnv() {
   chEnv[i] = NULL;
 }
 
-void CgiController::createArgv(const std::string &cgiExec) {
+void CgiPanel::createArgv(const std::string &cgiExec) {
   argv = new char *[3];
   argv[0] = strdup(cgiExec.c_str());
   argv[1] = strdup(cgiPath.c_str());
   argv[2] = NULL;
 }
 
-void CgiController::initEnvCgi(Request &req, const std::vector<Location>::iterator itLocation) {
+void CgiPanel::initEnvCgi(Request &req, const std::vector<Location>::iterator itLocation) {
   std::string cgiExec = ("cgi/" + itLocation->getCgiPath()[0]).c_str();
   char *cwd = getcwd(NULL, 0);
   if (cgiPath[0] != '/') {
@@ -128,7 +128,7 @@ void CgiController::initEnvCgi(Request &req, const std::vector<Location>::iterat
   delete[] cwd;
 }
 
-void CgiController::initEnv(Request &req, const std::vector<Location>::iterator itLocation) {
+void CgiPanel::initEnv(Request &req, const std::vector<Location>::iterator itLocation) {
   int poz;
   std::string extension;
   std::string extPath;
@@ -165,14 +165,14 @@ void CgiController::initEnv(Request &req, const std::vector<Location>::iterator 
   createArgv(extPath);
 }
 
-void CgiController::closePipes() {
+void CgiPanel::closePipes() {
   close(pipeIn[0]);
   close(pipeIn[1]);
   close(pipeOut[0]);
   close(pipeOut[1]);
 }
 
-void CgiController::execute(short &errorCode) {
+void CgiPanel::execute(short &errorCode) {
   if (!this->argv[0] || !this->argv[1]) {
     errorCode = 500;
     return;
@@ -201,13 +201,13 @@ void CgiController::execute(short &errorCode) {
   }
 }
 
-int CgiController::findStart(const std::string path, const std::string delim) {
+int CgiPanel::findStart(const std::string path, const std::string delim) {
   if (path.empty())
     return (-1);
   return path.find(delim);
 }
 
-unsigned int CgiController::fromHexToDec(const std::string &nb) {
+unsigned int CgiPanel::fromHexToDec(const std::string &nb) {
   unsigned int x;
   std::stringstream ss;
   ss << nb;
@@ -215,7 +215,7 @@ unsigned int CgiController::fromHexToDec(const std::string &nb) {
   return (x);
 }
 
-std::string CgiController::decode(std::string &path) {
+std::string CgiPanel::decode(std::string &path) {
   std::string decodedPath = path;
   size_t token = decodedPath.find("%");
   while (token != std::string::npos) {
@@ -228,7 +228,7 @@ std::string CgiController::decode(std::string &path) {
   return decodedPath;
 }
 
-std::string CgiController::getPathInfo(std::string &path, std::vector<std::string> extensions) {
+std::string CgiPanel::getPathInfo(std::string &path, std::vector<std::string> extensions) {
   std::string tmp;
   size_t start, end;
 
@@ -248,7 +248,7 @@ std::string CgiController::getPathInfo(std::string &path, std::vector<std::strin
   return (end == std::string::npos ? tmp : tmp.substr(0, end));
 }
 
-void CgiController::clear() {
+void CgiPanel::clear() {
   cgiPid = -1;
   exitStatus = 0;
   cgiPath.clear();

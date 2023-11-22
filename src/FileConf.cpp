@@ -1,12 +1,12 @@
-#include "../inc/ConfigFile.hpp"
+#include "../inc/FileConf.hpp"
 
-ConfigFile::ConfigFile() {}
+FileConf::FileConf() {}
 
-ConfigFile::ConfigFile(std::string const path) : path(path) {}
+FileConf::FileConf(std::string const path) : path(path) {}
 
-ConfigFile::~ConfigFile() {}
+FileConf::~FileConf() {}
 
-int ConfigFile::getTypePath(std::string const path) {
+int FileConf::getTypePath(std::string const path) {
   struct stat buffer;
   int result;
 
@@ -20,11 +20,11 @@ int ConfigFile::getTypePath(std::string const path) {
   return (OTHER_TYPE);
 }
 
-int ConfigFile::checkAccessFile(std::string const path, int mode) {
+int FileConf::checkAccessFile(std::string const path, int mode) {
   return (access(path.c_str(), mode));
 }
 
-int ConfigFile::isFileExistAndReadable(std::string const path, std::string const index) {
+int FileConf::isFileExistAndReadable(std::string const path, std::string const index) {
   if (getTypePath(index) == 1 && checkAccessFile(index, R_OK) == 0)
     return (0);
   if (getTypePath(path + index) == 1 && checkAccessFile(path + index, R_OK) == 0)
@@ -32,7 +32,7 @@ int ConfigFile::isFileExistAndReadable(std::string const path, std::string const
   return (-1);
 }
 
-std::string ConfigFile::readFile(std::string path) {
+std::string FileConf::readFile(std::string path) {
   if (path.empty() || path.length() == 0)
     return (NULL);
   std::ifstream config_file(path.c_str());

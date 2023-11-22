@@ -202,12 +202,12 @@ bool Response::isValidExtension(std::string &path) {
 }
 
 bool Response::isValidFileType(std::string &path) {
-  if (ConfigFile::getTypePath(path) != 1) {
+  if (FileConf::getTypePath(path) != 1) {
     code = 404;
     return false;
   }
 
-  if (ConfigFile::checkAccessFile(path, 1) == -1 || ConfigFile::checkAccessFile(path, 3) == -1) {
+  if (FileConf::checkAccessFile(path, 1) == -1 || FileConf::checkAccessFile(path, 3) == -1) {
     code = 403;
     return false;
   }

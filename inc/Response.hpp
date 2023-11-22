@@ -48,7 +48,7 @@ class Response {
   bool hasMimeType(std::string &extension) const;
   std::string getMimeType(std::string extension) const;
 
-  CgiController cgiObj;
+  CgiPanel cgiObj;
   Request request;
 
  private:

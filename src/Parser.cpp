@@ -223,7 +223,7 @@ void Parser::setDefaultServerValues(Server &server) {
 }
 
 void Parser::performServerValidations(Server &server) {
-  if (ConfigFile::isFileExistAndReadable(server.getRoot(), server.getIndex()))
+  if (FileConf::isFileExistAndReadable(server.getRoot(), server.getIndex()))
     throw Error("The index file specified in the config file was not found or is unreadable");
   if (server.checkLocation())
     throw Error("Duplicate location found in the server configuration");
@@ -287,19 +287,19 @@ void Parser::createServerFromConfig(std::string &configString, Server &server) {
   server.setErrorPages(errorCode);
 }
 
-int Parser::parseServerConfigFile(const std::string &filePath) {
-  ConfigFile configFile;
-  int fileType = configFile.getTypePath(filePath);
+int Parser::parseServerFileConf(const std::string &filePath) {
+  FileConf FileConf;
+  int fileType = FileConf.getTypePath(filePath);
 
   if (fileType == INVALID_TYPE)
     throw Error("Invalid file type detected");
 
-  int isFileReadable = configFile.checkAccessFile(filePath, R_OK);
+  int isFileReadable = FileConf.checkAccessFile(filePath, R_OK);
 
   if (isFileReadable == -1)
     throw Error("File is not accessible or cannot be read");
 
-  std::string fileContent = configFile.readFile(filePath);
+  std::string fileContent = FileConf.readFile(filePath);
 
   if (fileContent.empty())
     throw Error("Empty file encountered");
